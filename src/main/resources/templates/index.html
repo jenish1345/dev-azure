@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passport Automation System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .navbar-bg {
+            background-color: #1e40af;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="navbar-bg text-white py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="flex items-center">
+                <h1 class="text-2xl font-bold">Passport Automation System</h1>
+            </div>
+            <nav>
+                <a href="/login" class="text-lg font-medium mr-4 hover:text-blue-200">Login</a>
+                <a href="/register" class="text-lg font-medium hover:text-blue-200">Register</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-12 px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold mb-4">Welcome to Passport Automation System</h2>
+            <p class="text-xl text-gray-600">Apply for your passport online with ease</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <div class="text-blue-600 text-5xl mb-4">📝</div>
+                <h3 class="text-xl font-semibold mb-2">Easy Application</h3>
+                <p class="text-gray-600">Submit your passport application online in minutes</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <div class="text-blue-600 text-5xl mb-4">📊</div>
+                <h3 class="text-xl font-semibold mb-2">Track Status</h3>
+                <p class="text-gray-600">Real-time tracking of your application status</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <div class="text-blue-600 text-5xl mb-4">🔒</div>
+                <h3 class="text-xl font-semibold mb-2">Secure & Safe</h3>
+                <p class="text-gray-600">Your data is encrypted and securely stored</p>
+            </div>
+        </div>
+
+        <div class="mt-12 text-center">
+            <a href="/register" class="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700">
+                Get Started
+            </a>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2026 Passport Automation System. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

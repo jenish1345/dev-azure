@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Passport - Passport Automation System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-700 p-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <a href="/applicant/dashboard" class="text-white text-xl font-semibold">← Back to Dashboard</a>
+        </div>
+        <a href="/logout" class="text-white hover:text-blue-200">Logout</a>
+    </nav>
+
+    <div class="container mx-auto max-w-2xl py-8 px-4">
+        <div class="bg-white rounded-lg shadow-md p-8">
+            <h2 class="text-2xl font-bold mb-6">Passport Application Form</h2>
+
+            <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <span th:text="${error}"></span>
+            </div>
+
+            <form action="/applicant/apply" method="POST" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="fullName" class="block font-semibold mb-2">Full Name (as per documents):</label>
+                    <input type="text" id="fullName" name="fullName" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                </div>
+
+                <div class="mb-4">
+                    <label for="dateOfBirth" class="block font-semibold mb-2">Date of Birth:</label>
+                    <input type="date" id="dateOfBirth" name="dateOfBirth" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                </div>
+
+                <div class="mb-4">
+                    <label for="placeOfBirth" class="block font-semibold mb-2">Place of Birth:</label>
+                    <input type="text" id="placeOfBirth" name="placeOfBirth" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                </div>
+
+                <div class="mb-4">
+                    <label for="currentAddress" class="block font-semibold mb-2">Current Address:</label>
+                    <textarea id="currentAddress" name="currentAddress" required rows="3"
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="permanentAddress" class="block font-semibold mb-2">Permanent Address:</label>
+                    <textarea id="permanentAddress" name="permanentAddress" required rows="3"
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="applicationType" class="block font-semibold mb-2">Application Type:</label>
+                    <select id="applicationType" name="applicationType" required 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                        <option value="">Select Type</option>
+                        <option value="NEW_PASSPORT">New Passport</option>
+                        <option value="RENEWAL">Renewal</option>
+                        <option value="REISSUE">Reissue</option>
+                        <option value="TATKAL">Tatkal</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="identityProof" class="block font-semibold mb-2">Identity Proof (Aadhar/PAN):</label>
+                    <input type="file" id="identityProof" name="identityProof" required accept=".pdf,.jpg,.jpeg,.png"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                    <p class="text-sm text-gray-600 mt-1">Accepted formats: PDF, JPG, PNG (Max 10MB)</p>
+                </div>
+
+                <div class="mb-6">
+                    <label for="addressProof" class="block font-semibold mb-2">Address Proof (Utility Bill/Rent Agreement):</label>
+                    <input type="file" id="addressProof" name="addressProof" required accept=".pdf,.jpg,.jpeg,.png"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                    <p class="text-sm text-gray-600 mt-1">Accepted formats: PDF, JPG, PNG (Max 10MB)</p>
+                </div>
+
+                <div class="flex justify-between">
+                    <a href="/applicant/dashboard" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600">
+                        Cancel
+                    </a>
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                        Submit Application
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

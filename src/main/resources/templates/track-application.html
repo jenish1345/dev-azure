@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Application - Passport Automation System</title>
+    <script src="https://cdn.tailwindcss.com/2.2.19/tailwind.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Passport Automation</h1>
+            <div class="space-x-4">
+                <a th:href="@{/applicant/dashboard}" class="hover:underline">Dashboard</a>
+                <a th:href="@{/applicant/apply}" class="hover:underline">New Application</a>
+                <a th:href="@{/profile}" class="hover:underline">Profile</a>
+                <a th:href="@{/logout}" class="hover:underline">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto mt-8 p-6">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800">Application Details</h2>
+
+            <div th:if="${application}" class="space-y-6">
+                <!-- Application Status Card -->
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800">Application ID: <span th:text="${application.applicationId}"></span></h3>
+                            <p class="text-gray-600 mt-2">Submitted on: <span th:text="${#temporals.format(application.submissionDate, 'dd-MM-yyyy')}"></span></p>
+                        </div>
+                        <div>
+                            <span th:text="${application.status}" 
+                                  th:classappend="${application.status == 'APPROVED'} ? 'bg-green-100 text-green-800' : 
+                                                 (${application.status == 'REJECTED'} ? 'bg-red-100 text-red-800' : 
+                                                 (${application.status == 'UNDER_VERIFICATION'} ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'))"
+                                  class="px-4 py-2 rounded-full text-sm font-semibold"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Applicant Information -->
+                <div class="border-t pt-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Applicant Information</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-600">Full Name:</p>
+                            <p class="font-semibold" th:text="${application.fullName}"></p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600">Date of Birth:</p>
+                            <p class="font-semibold" th:text="${#temporals.format(application.dateOfBirth, 'dd-MM-yyyy')}"></p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600">Place of Birth:</p>
+                            <p class="font-semibold" th:text="${application.placeOfBirth}"></p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600">Application Type:</p>
+                            <p class="font-semibold" th:text="${application.applicationType}"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="border-t pt-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Address Information</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-600">Current Address:</p>
+                            <p class="font-semibold" th:text="${application.currentAddress}"></p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600">Permanent Address:</p>
+                            <p class="font-semibold" th:text="${application.permanentAddress}"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verification Status -->
+                <div class="border-t pt-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Verification Status</h4>
+                    <div class="bg-gray-50 p-4 rounded">
+                        <p class="text-gray-600">Police Verification:</p>
+                        <p class="font-semibold mt-1">
+                            <span th:text="${application.policeVerificationStatus}"
+                                  th:classappend="${application.policeVerificationStatus == 'VERIFIED'} ? 'text-green-600' : 
+                                                 (${application.policeVerificationStatus == 'NOT_VERIFIED'} ? 'text-red-600' : 'text-yellow-600')"></span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Appointment Details -->
+                <div class="border-t pt-6" th:if="${application.appointmentDate}">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Appointment Details</h4>
+                    <div class="bg-green-50 p-4 rounded">
+                        <p class="text-gray-600">Date:</p>
+                        <p class="font-semibold" th:text="${#temporals.format(application.appointmentDate, 'dd-MM-yyyy')}"></p>
+                        <p class="text-gray-600 mt-2">Time:</p>
+                        <p class="font-semibold" th:text="${application.appointmentTime}"></p>
+                    </div>
+                </div>
+
+                <!-- Rejection Reason -->
+                <div class="border-t pt-6" th:if="${application.status == 'REJECTED' and application.rejectionReason}">
+                    <h4 class="text-lg font-semibold text-red-600 mb-4">Rejection Reason</h4>
+                    <div class="bg-red-50 p-4 rounded">
+                        <p class="text-gray-800" th:text="${application.rejectionReason}"></p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="border-t pt-6 flex gap-4">
+                    <a th:href="@{/applicant/dashboard}" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                        Back to Dashboard
+                    </a>
+                    <a th:if="${application.status == 'SUBMITTED' and !application.appointmentDate}" 
+                       th:href="@{/applicant/appointment/{id}(id=${application.applicationId})}" 
+                       class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+                        Book Appointment
+                    </a>
+                </div>
+            </div>
+
+            <div th:unless="${application}" class="text-center py-8">
+                <p class="text-gray-600 text-lg">Application not found</p>
+                <a th:href="@{/applicant/dashboard}" class="text-blue-600 hover:underline mt-4 inline-block">Return to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
