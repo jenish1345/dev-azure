@@ -1,74 +1,113 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Applicant Dashboard - Passport Automation System</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Applicant Dashboard - Passport Automation System</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
-    <nav class="bg-blue-700 p-4 flex justify-between items-center">
-        <div class="flex items-center">
-            <h1 class="text-white text-xl font-semibold">Passport Automation System</h1>
-        </div>
-        <div class="flex items-center">
-            <a href="/profile" class="text-white mr-4 hover:text-blue-200">Profile</a>
-            <a href="/logout" class="text-white hover:text-blue-200">Logout</a>
-        </div>
-    </nav>
-
-    <div class="container mx-auto py-8 px-4">
-        <h2 class="text-3xl font-bold mb-6">Applicant Dashboard</h2>
-
-        <div class="mb-6">
-            <a href="/applicant/apply" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                Apply for New Passport
-            </a>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-xl font-semibold mb-4">My Applications</h3>
-
-            <div th:if="${applications.isEmpty()}" class="text-gray-600">
-                You have not submitted any applications yet.
-            </div>
-
-            <div th:if="${!applications.isEmpty()}">
-                <table class="w-full border-collapse">
-                    <thead>
-                        <tr class="bg-gray-200">
-                            <th class="border p-3 text-left">Application ID</th>
-                            <th class="border p-3 text-left">Full Name</th>
-                            <th class="border p-3 text-left">Application Type</th>
-                            <th class="border p-3 text-left">Status</th>
-                            <th class="border p-3 text-left">Submission Date</th>
-                            <th class="border p-3 text-left">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="app : ${applications}">
-                            <td class="border p-3" th:text="${app.applicationId}"></td>
-                            <td class="border p-3" th:text="${app.fullName}"></td>
-                            <td class="border p-3" th:text="${app.applicationType}"></td>
-                            <td class="border p-3">
-                                <span th:text="${app.status}" 
-                                      th:class="${app.status == 'APPROVED' ? 'bg-green-200 text-green-800 px-2 py-1 rounded' : 
-                                                 app.status == 'REJECTED' ? 'bg-red-200 text-red-800 px-2 py-1 rounded' : 
-                                                 'bg-yellow-200 text-yellow-800 px-2 py-1 rounded'}"></span>
-                            </td>
-                            <td class="border p-3" th:text="${#temporals.format(app.submissionDate, 'dd-MM-yyyy HH:mm')}"></td>
-                            <td class="border p-3">
-                                <a th:href="@{/applicant/track/{id}(id=${app.applicationId})}" 
-                                   class="text-blue-600 hover:text-blue-800 mr-2">Track</a>
-                                <a th:if="${app.status == 'SUBMITTED' and app.appointmentDate == null}"
-                                   th:href="@{/applicant/appointment/{id}(id=${app.applicationId})}" 
-                                   class="text-green-600 hover:text-green-800">Book Appointment</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  <nav class="bg-blue-700 p-4 flex justify-between items-center">
+    <div class="flex items-center">
+      <h1 class="text-white text-xl font-semibold">Passport Automation System</h1>
     </div>
+    <div class="flex items-center">
+      <a href="/profile" class="text-white mr-4 hover:text-blue-200">Profile</a>
+      <a href="/logout" class="text-white hover:text-blue-200">Logout</a>
+    </div>
+  </nav>
+
+  <div id="root" class="container mx-auto py-8 px-4"></div>
+
+  <!-- React (from CDN) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function statusClass(status) {
+      if (status === 'APPROVED') return 'bg-green-200 text-green-800 px-2 py-1 rounded';
+      if (status === 'REJECTED') return 'bg-red-200 text-red-800 px-2 py-1 rounded';
+      return 'bg-yellow-200 text-yellow-800 px-2 py-1 rounded';
+    }
+
+    function App() {
+      const [apps, setApps] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+
+      useEffect(() => {
+        fetch('/api/applicant/dashboard', { credentials: 'same-origin' })
+          .then(res => res.json())
+          .then(json => {
+            if (!json.success) {
+              if (json.message && json.message.toLowerCase().includes('not authenticated')) {
+                window.location.href = '/login';
+                return;
+              }
+              setError(json.message || 'Failed to load');
+            } else {
+              setApps(json.data || []);
+            }
+          })
+          .catch(err => setError(err.message || 'Fetch error'))
+          .finally(() => setLoading(false));
+      }, []);
+
+      if (loading) return <div className="text-center py-8">Loading…</div>;
+      if (error) return <div className="text-red-600">Error: {error}</div>;
+
+      return (
+        <div>
+          <h2 className="text-3xl font-bold mb-6">Applicant Dashboard</h2>
+          <div className="mb-6">
+            <a href="/applicant/apply" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Apply for New Passport</a>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-xl font-semibold mb-4">My Applications</h3>
+
+            {apps.length === 0 ? (
+              <div className="text-gray-600">You have not submitted any applications yet.</div>
+            ) : (
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-gray-200">
+                    <th className="border p-3 text-left">Application ID</th>
+                    <th className="border p-3 text-left">Full Name</th>
+                    <th className="border p-3 text-left">Application Type</th>
+                    <th className="border p-3 text-left">Status</th>
+                    <th className="border p-3 text-left">Submission Date</th>
+                    <th className="border p-3 text-left">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {apps.map(app => (
+                    <tr key={app.applicationId}>
+                      <td className="border p-3">{app.applicationId}</td>
+                      <td className="border p-3">{app.fullName}</td>
+                      <td className="border p-3">{app.applicationType}</td>
+                      <td className="border p-3"><span className={statusClass(app.status)}>{app.status}</span></td>
+                      <td className="border p-3">{app.submissionDate ? new Date(app.submissionDate).toLocaleString() : ''}</td>
+                      <td className="border p-3">
+                        <a href={`/applicant/track/${app.applicationId}`} className="text-blue-600 hover:text-blue-800 mr-2">Track</a>
+                        {app.status === 'SUBMITTED' && !app.appointmentDate && (
+                          <a href={`/applicant/appointment/${app.applicationId}`} className="text-green-600 hover:text-green-800">Book Appointment</a>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
 </body>
 </html>

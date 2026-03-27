@@ -36,7 +36,7 @@ mvn spring-boot:run
 ```
 
 ### Step 5: Access the Application
-Open browser: http://localhost:8080
+Open browser: http://localhost:8081
 
 ## 📝 Test the Application
 
